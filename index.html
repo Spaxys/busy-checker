@@ -33,14 +33,14 @@
       <a href="#" id="toggleSettings">Settings</a>
     </form>
     <div id="clientArea">
-      <button id="clientButton" class="clientButton">Ready?</button>
+      <button id="clientButton" class="clientButton" style="width:100px; height:50px;">Redo?</button>
       <div id="clientsClientStatus" class="status clientStatus" style="display:none"></div>
       <div id="clientsServerStatus" class="status serverStatus"></div>
     </div>
     <div id="serverArea">
-      <button id="serverButtonBusy" class="serverButton">Busy</button>
-      <button id="serverButtonWait">Wait...</button>
-      <button id="serverButtonReady">Come in</button>
+      <button id="serverButtonBusy" class="serverButton">Upptagen</button>
+      <button id="serverButtonWait">Vänta lite...</button>
+      <button id="serverButtonReady">Kom in</button>
       <div id="serversClientStatus" class="status clientStatus"></div>
       <div id="serversServerStatus" class="status serverStatus" style="display:none"></div>
     </div>
@@ -80,16 +80,16 @@
             showCorrectArea();
           });
           $('#clientButton').click(function(e){
-            clientMessage("Ready?");
+            clientMessage("Redo?");
           });
           $('#serverButtonBusy').click(function(e){
-            serverMessage("Busy");
+            serverMessage("Upptagen");
           });
           $('#serverButtonWait').click(function(e){
-            serverMessage("Wait...");
+            serverMessage("Vänta lite...");
           });
           $('#serverButtonReady').click(function(e){
-            serverMessage("Come in");
+            serverMessage("Kom in :)");
           });
 
           socket.on('client-message', function(msg){
