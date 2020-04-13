@@ -9,8 +9,8 @@
       form#chat { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
       form#chat input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
       form#chat button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #clientStatus { padding: 5px 10px; color:red}
-      #serverStatus { padding: 5px 10px; color:green}
+      .clientStatus { padding: 5px 10px; color:red}
+      .serverStatus { padding: 5px 10px; color:green}
     </style>
   </head>
   <body>
@@ -30,11 +30,19 @@
       </label>
       <button>Connect</button>
     </form>
-    <div id="clientStatus"></div>
-    <div id="serverStatus"></div>
-    <form action="" id="chat">
-      <input id="m" autocomplete="off" /><button>Send</button>
-    </form>
+    <div id="clientArea">
+      <button id="clientButton" class="clientButton">Ready?</button>
+      <div id="clientsClientStatus" class="clientStatus" style="display:none"></div>
+      <div id="clientsServerStatus" class="serverStatus"></div>
+    </div>
+    <div id="serverArea">
+      <button id="serverButtonBusy" class="serverButton">Busy</button>
+      <button id="serverButtonWait">Wait...</button>
+      <button id="serverButtonReady">Come in</button>
+      <div id="serversClientStatus" class="clientStatus"></div>
+      <div id="serversServerStatus" class="serverStatus"></div>
+    </div>
+    
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
     <script>
@@ -45,25 +53,46 @@
           function serverMessage(msg) {
             socket.emit('server-message', 'server: ' + msg);
           }
+          function showCorrectArea() {
+            if(role == 'client') {
+              $('#clientArea').show();
+              $('#serverArea').hide();
+            }
+            if(role == 'server') {
+              $('#serverArea').show();
+              $('#clientArea').hide();
+            }
+          }
           var socket = io('http://' + $('#server-address').val() + ':' + $('#server-port').val());
           var role = "client";
+          showCorrectArea();
+
           $('form#setup').submit(function(e){
             e.preventDefault();
             socket = io('http://' + $('#server-address').val() + ':' + $('#server-port').val());
             role = $('#roles :selected').val();
+            showCorrectArea();
           });
-          $('form#chat').submit(function(e){
-            e.preventDefault();
-            if(role == 'client') { clientMessage($('#m').val()); }
-            if(role == 'server') { serverMessage($('#m').val()); }
-            $('#m').val('');
-            return false;
+          $('#clientButton').click(function(e){
+            clientMessage("Ready?");
           });
+          $('#serverButtonBusy').click(function(e){
+            serverMessage("Busy");
+          });
+          $('#serverButtonWait').click(function(e){
+            serverMessage("Wait...");
+          });
+          $('#serverButtonReady').click(function(e){
+            serverMessage("Come in");
+          });
+
           socket.on('client-message', function(msg){
-              $('#clientStatus').text(msg);
+              $('#clientsClientStatus').text(msg);
+              $('#serversClientStatus').text(msg);
           });
           socket.on('server-message', function(msg){
-              $('#serverStatus').text(msg);
+              $('#clientsServerStatus').text(msg);
+              $('#serversServerStatus').text(msg);
           });
         });
     </script>
